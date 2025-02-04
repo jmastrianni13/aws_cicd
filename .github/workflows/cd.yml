@@ -1,0 +1,32 @@
+name: Python CD Pipeline
+
+on:
+  push:
+    branches:
+      - python
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH Key
+        shell: bash
+        run: |
+          echo "${{ secrets.EC2_KEY_PYTHON }}" > ~/PythonSimpleServer.pem
+          chmod 400 ~/PythonSimpleServer.pem
+
+      - name: Deploy Code
+        shell: bash
+        run: |
+          # Copy all project files to the EC2 instance
+          scp -o StrictHostKeyChecking=no -i ~/PythonSimpleServer.pem -r ./* ${{ secrets.EC2_USER_PYTHON }}@${{ secrets.EC2_HOST_PYTHON }}:/home/${{ secrets.EC2_USER_PTYHON }}/PythonSimpleServer/
+
+          # SSH into the EC2 instance and deploy
+          ssh -o StrictHostKeyChecking=no -i ~/PythonSimpleServer.pem ${{ secrets.EC2_USER_PYTHON }}@${{ secrets.EC2_HOST_PYTHON }} "
+            cd /home/${{ secrets.EC2_USER_PYTHON }}/PythonSimpleServer &&
+            docker-compose up --build -d
+          "
