@@ -7,7 +7,7 @@ RUN python -m pip install -r requirements.txt
 
 COPY src/serve.py /app/src/serve.py
 
-EXPOSE 5000
+EXPOSE 8000
 
-CMD ["sanic", "src.serve:app", "--fast", "-p=5000", "--debug"]
+CMD ["sanic", "src.serve:app", "--fast", "-p=8000", "--debug"]
 
