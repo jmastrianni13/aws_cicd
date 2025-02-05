@@ -36,10 +36,10 @@ impl ThreadPool {
             workers.push(Worker::new(id, sync::Arc::clone(&receiver)));
         }
 
-        return Self {
+        Self {
             workers,
             sender: Some(sender),
-        };
+        }
     }
 
     pub fn execute<F>(&self, f: F)
@@ -75,10 +75,10 @@ impl Worker {
             }
         });
 
-        return Worker {
+        Worker {
             id,
             w_thread: Some(w_thread),
-        };
+        }
     }
 }
 
