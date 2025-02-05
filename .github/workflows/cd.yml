@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: ["Python CI Pipeline"]
     types:
-      - completed:
+      - completed
     branches:
       - python
 
