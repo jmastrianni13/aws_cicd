@@ -1,11 +1,8 @@
 name: Python CD Pipeline
 
 on:
-  workflow_run:
-    workflows: ["Python CI Pipeline"]
-    types:
-      - completed
-    branches:
+  push:
+    branchs:
       - python
 
 jobs:
