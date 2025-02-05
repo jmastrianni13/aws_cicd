@@ -23,7 +23,7 @@ jobs:
         shell: bash
         run: |
           # Copy relevant files to the EC2 instance
-          scp -o StrictHostKeyChecking=no -i ~/PythonSimpleServer.pem -r ./Dockerfile ./docker-compose.yml ./requirements.txt ./src/*.py ./tests/*.py ${{ secrets.EC2_USER_PYTHON }}@${{ secrets.EC2_HOST_PYTHON }}:/home/${{ secrets.EC2_USER_PYTHON }}/PythonSimpleServer/
+          scp -o StrictHostKeyChecking=no -i ~/PythonSimpleServer.pem -r ./* ${{ secrets.EC2_USER_PYTHON }}@${{ secrets.EC2_HOST_PYTHON }}:/home/${{ secrets.EC2_USER_PYTHON }}/PythonSimpleServer/
 
           # SSH into the EC2 instance and deploy
           ssh -o StrictHostKeyChecking=no -i ~/PythonSimpleServer.pem ${{ secrets.EC2_USER_PYTHON }}@${{ secrets.EC2_HOST_PYTHON }} "
