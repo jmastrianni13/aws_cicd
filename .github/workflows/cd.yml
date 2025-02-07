@@ -16,17 +16,17 @@ jobs:
       - name: Set up SSH Key
         shell: bash
         run: |
-          echo "${{ secrets.EC2_KEY_PYTHON }}" > ~/PythonSimpleServer.pem
+          echo "${{ secrets.EC2_KEY }}" > ~/PythonSimpleServer.pem
           chmod 400 ~/PythonSimpleServer.pem
 
       - name: Deploy Code
         shell: bash
         run: |
           # Copy relevant files to the EC2 instance
-          scp -o StrictHostKeyChecking=no -i ~/PythonSimpleServer.pem -r ./* ${{ secrets.EC2_USER_PYTHON }}@${{ secrets.EC2_HOST_PYTHON }}:/home/${{ secrets.EC2_USER_PYTHON }}/PythonSimpleServer/
+          scp -o StrictHostKeyChecking=no -i ~/PythonSimpleServer.pem -r ./* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/PythonSimpleServer/
 
           # SSH into the EC2 instance and deploy
-          ssh -o StrictHostKeyChecking=no -i ~/PythonSimpleServer.pem ${{ secrets.EC2_USER_PYTHON }}@${{ secrets.EC2_HOST_PYTHON }} "
-            cd /home/${{ secrets.EC2_USER_PYTHON }}/PythonSimpleServer &&
+          ssh -o StrictHostKeyChecking=no -i ~/PythonSimpleServer.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
+            cd /home/${{ secrets.EC2_USER }}/PythonSimpleServer &&
             docker-compose up --build -d
           "
