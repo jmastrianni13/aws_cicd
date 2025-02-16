@@ -1,0 +1,63 @@
+name: "Terraform Build"
+
+on:
+  push:
+    branches:
+      - terraform
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+env:
+  TF_LOG: INFO
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+jobs:
+  deploy:
+    name: "Run Terraform"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform/
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials from AWS account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_GITHUB_ACTIONS }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: Github-OIDC_Terraform
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.2.5
+
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        env:
+          AWS_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME_TF_STATE }}
+          AWS_BUCKET_KEY_NAME: ${{ secrets.S3_BUCKET_KEY_NAME_TF_STATE }}
+        run: terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan
+
+      - name: Confirm Terraform Plan
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/head/terraform' && github.event_name == 'push'
+        run: terraform apply -auto-approve
+
