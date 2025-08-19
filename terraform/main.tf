@@ -1,9 +1,15 @@
-resource "aws_instance" "web_app" {
-  ami           = "ami-053a45fff0a704a47"
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_instance" "simple_server" {
+  ami           = "ami-083522e25d3e4d203"
   instance_type = "t2.micro"
 
+  key_name = "ec2_simple_server_key_pair"
+
   tags = {
-    Name = "Web App EC2 Instance"
+    Name = "EC2 Instance Simple Server"
   }
 }
 
