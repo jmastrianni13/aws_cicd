@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_instance" "simple_server" {
   ami           = "ami-083522e25d3e4d203"
-  instance_type = "t2.micro"
+  instance_type = "t4g.micro"
 
   key_name = "ec2_simple_server_key_pair"
 
