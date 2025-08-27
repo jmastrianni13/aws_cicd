@@ -13,9 +13,6 @@ jobs:
   call-terraform:
     needs: call-ci
     uses: ./.github/workflows/terraform.yml
-    secrets:
-      AWS_REGION:
-        required: true
   call-cd:
     needs: call-terraform
     uses: ./.github/workflows/cd.yml
