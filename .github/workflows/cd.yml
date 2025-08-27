@@ -10,6 +10,7 @@ on:
     inputs:
       EC2_HOST:
         required: true
+        type: string
         description: 'Public IP for EC2 instance'
 permissions:
   id-token: write
