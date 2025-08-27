@@ -5,6 +5,12 @@ on:
     secrets:
       AWS_REGION:
         required: true
+      AWS_ROLE_GITHUB_ACTIONS:
+        required: true
+      AWS_BUCKET_NAME:
+        required: true
+      AWS_BUCKET_KEY_NAME:
+        required: true
 permissions:
   id-token: write
   contents: read
