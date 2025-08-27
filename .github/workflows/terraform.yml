@@ -1,9 +1,7 @@
 name: "Terraform Build"
 
 on:
-  push:
-    branches:
-      - terraform
+  workflow_call:
 permissions:
   id-token: write
   contents: read
@@ -60,4 +58,9 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/terraform' && github.event_name == 'push'
         run: terraform apply -auto-approve
+
+      - name: Get Terraform Outputs
+        id: tf_outputs
+        run: |
+          echo "EC2_HOST=$(terraform output -raw ec2_public_ip)" >> $GITHUB_ENV
 

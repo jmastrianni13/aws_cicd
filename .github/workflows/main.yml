@@ -6,7 +6,10 @@ on:
 jobs:
   call-ci:
     uses: ./.github/workflows/ci.yml
-  call-cd:
+  call-terraform:
     needs: call-ci
+    uses: ./.github/workflows/terraform.yml
+  call-cd:
+    needs: call-terraform
     uses: ./.github/workflows/cd.yml
 
