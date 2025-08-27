@@ -65,6 +65,8 @@ jobs:
         run: terraform apply -auto-approve
 
       - name: Get Terraform Outputs
+        env:
+          TF_LOG: "" # disable logging so it does not interfere with the following echo command
         id: tf_outputs
         run: |
           echo "EC2_HOST=$(terraform output -raw ec2_public_ip)" >> $GITHUB_ENV
