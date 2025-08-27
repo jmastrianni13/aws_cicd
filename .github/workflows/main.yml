@@ -21,9 +21,9 @@ jobs:
   call-cd:
     needs: call-terraform
     uses: ./.github/workflows/cd.yml
+    with:
+      EC2_HOST: ${{ needs.call-terraform.outputs.ec2_public_ip }}
     secrets:
       EC2_USER: ${{ secrets.EC2_USER }}
       EC2_KEY: ${{ secrets.EC2_KEY }}
-    steps:
-      - run echo ${{ needs.call-terraform.outputs.ec2_public_ip }}
 

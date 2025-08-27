@@ -7,6 +7,10 @@ on:
         required: true
       EC2_KEY:
         required: true
+    inputs:
+      EC2_HOST:
+        required: true
+        description: 'Public IP for EC2 instance'
 permissions:
   id-token: write
   contents: read
@@ -29,10 +33,10 @@ jobs:
         shell: bash
         run: |
           # Copy relevant files to the EC2 instance
-          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r ./* ${{ secrets.EC2_USER }}@${{ env.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/RustSimpleServer
+          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r ./* ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/RustSimpleServer
 
           # SSH into the EC2 instance and deploy
-          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ env.EC2_HOST }} "
+          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} "
             cd /home/${{ secrets.EC2_USER }}/RustSimpleServer &&
             docker-compose up --build -d
           "
