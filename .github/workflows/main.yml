@@ -18,6 +18,8 @@ jobs:
       AWS_ROLE_GITHUB_ACTIONS: ${{ secrets.AWS_ROLE_GITHUB_ACTIONS }}
       AWS_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME_TF_STATE }}
       AWS_BUCKET_KEY_NAME: ${{ secrets.S3_BUCKET_KEY_NAME_TF_STATE }}
+    outputs:
+      ec2_public_ip: ${{ jobs.deploy.outputs.ec2_public_ip_output }}
   call-cd:
     needs: call-terraform
     uses: ./.github/workflows/cd.yml

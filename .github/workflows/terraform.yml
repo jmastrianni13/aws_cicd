@@ -14,7 +14,7 @@ on:
     outputs:
       ec2_public_ip:
         description: "public IP generated for deployed ec2"
-        value: #{{ jobs.deploy.steps.tf_outputs.EC2_HOST }}
+        value: ${{ jobs.deploy.outputs.ec2_public_ip_output }}
 permissions:
   id-token: write
   contents: read
