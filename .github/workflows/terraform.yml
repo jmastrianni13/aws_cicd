@@ -11,6 +11,10 @@ on:
         required: true
       AWS_BUCKET_KEY_NAME:
         required: true
+    outputs:
+      ec2_public_ip:
+        description: "public IP generated for deployed ec2"
+        value: #{{ jobs.deploy.outputs.ec2_public_ip_output }}
 permissions:
   id-token: write
   contents: read
@@ -25,7 +29,8 @@ jobs:
       run:
         shell: bash
         working-directory: terraform/
-
+    outputs:
+      ec2_public_ip_output: #{{ steps.tf_outputs.outputs.EC2_HOST }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -68,5 +73,5 @@ jobs:
         env:
           TF_LOG: "" # disable logging so it does not interfere with the following echo command
         id: tf_outputs
-        run: echo "EC2_HOST=some_host" >> $GITHUB_ENV
+        run: echo "EC2_HOST=some_host" >> $GITHUB_OUTPUT
 
