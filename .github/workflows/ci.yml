@@ -1,9 +1,7 @@
 name: Rust CI Pipeline
 
 on:
-  push:
-    branches:
-      - rust
+  workflow_call:
 
 jobs:
   build:

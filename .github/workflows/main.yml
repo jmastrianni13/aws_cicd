@@ -1,0 +1,12 @@
+name: Main
+on:
+  push:
+    branches:
+      - main
+jobs:
+  call-ci:
+    uses: ./.github/workflows/ci.yml
+  call-cd:
+    needs: call-ci
+    uses: ./.github/workflows/cd.yml
+

@@ -1,9 +1,7 @@
 name: Rust CD Pipeline
 
 on:
-  push:
-    branches:
-      - rust
+  workflow_call:
 
 jobs:
   deploy:
