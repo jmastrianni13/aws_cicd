@@ -1,81 +1,44 @@
-use aws_config::BehaviorVersion;
-use aws_config::meta::region::RegionProviderChain;
-use aws_sdk_dynamodb::{Client as DynamoDbClient};
-use lambda_http::{Request as LambdaRequest, RequestExt};
-use lambda_runtime::{service_fn, tracing, Error as LambdaError, LambdaEvent};
-use serde_json::{json, Value};
+use std::fs;
+use std::io;
+use std::io::prelude::*;
+use std::net;
+use std::thread;
+use std::time;
 
-mod models;
-mod handlers;
-use self::{
-    models::{
-        user::AddUserEvent
-    },
-    handlers::{
-        create_user_handler::create_user,
-        get_user_handler::get_user
+use web_server::ThreadPool;
+
+fn main() {
+    let listener = net::TcpListener::bind("0.0.0.0:8000").unwrap();
+    let pool = ThreadPool::new(4);
+
+    loop {
+        for stream in listener.incoming().take(2) {
+            let stream = stream.unwrap();
+
+            pool.execute(|| {
+                handle_connection(stream);
+            });
+        }
     }
-};
-
-#[tokio::main]
-async fn main() -> Result<(), LambdaError> {
-    tracing::init_default_subscriber();
-    let func = service_fn(handler_func);
-    lambda_runtime::run(func).await?;
-    Ok(())
 }
 
-async fn handler_func(event: LambdaRequest) -> Result<Value, LambdaError> {
-    let region_provider = RegionProviderChain::default_provider().or_else("us-east-1");
-    let config = aws_config::defaults(BehaviorVersion::v2024_03_28()).region(region_provider).load().await;
-    let client = DynamoDbClient::new(&config);
+fn handle_connection(mut stream: net::TcpStream) {
+    let buf_reader = io::BufReader::new(&mut stream);
 
-    let body_string: &str = match event.body() {
-        lambda_http::Body::Text(text) => text.as_str(),
-        _ => "",
-    };
-    
-    let result: Option<Value> = match event.method() {
-        &lambda_http::http::method::Method::GET => {
-            Some(json!(get_user(&client, event.query_string_parameters().get("id").unwrap()).await?))
+    let request_line = buf_reader.lines().next().unwrap().unwrap();
+
+    let (status_line, filename) = match &request_line[..] {
+        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "src/hello.html"),
+        "GET /sleep HTTP/1.1" => {
+            thread::sleep(time::Duration::from_secs(5));
+            ("HTTP/1.1 200 OK", "src/hello.html")
         }
-        &lambda_http::http::method::Method::POST => {
-            Some(json!(create_user(&client, body_string).await?))
-        }
-        &lambda_http::http::method::Method::DELETE => {
-            Some(json!("delete"))
-        }
-        &lambda_http::http::method::Method::PUT => {
-            Some(json!("put"))
-        }
-        _ => {
-            None
-        }
+        _ => ("HTTP/1.1 404 NOT FOUND", "src/404.html"),
     };
 
-    match result {
-        Some(value) => Ok(json!(value)),
-        None => Ok(json!("Unsupported HTTP Method"))
-    }
+    let contents = fs::read_to_string(filename).unwrap();
+    let length = contents.len();
+
+    let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+    stream.write_all(response.as_bytes()).unwrap();
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn converts_payload_to_event() {
-        let body_string = r#"
-        {
-            "first_name":"someFirstName",
-            "last_name":"someLastName"
-        }
-        "#;
-
-        let event: AddUserEvent = serde_json::from_str(body_string).unwrap();
-
-        assert!(event.first_name == "first");
-        assert!(event.last_name == "last");
-    }
-}
-
