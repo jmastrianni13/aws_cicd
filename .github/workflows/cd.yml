@@ -34,6 +34,7 @@ jobs:
         shell: bash
         run: |
           # Copy relevant files to the EC2 instance
+          echo "EC2_HOST = ${{ inputs.EC2_HOST }}"
           scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r ./* ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/RustSimpleServer
 
           # SSH into the EC2 instance and deploy
