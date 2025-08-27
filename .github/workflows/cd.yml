@@ -2,7 +2,15 @@ name: Rust CD Pipeline
 
 on:
   workflow_call:
-
+    secrets:
+      EC2_USER:
+        required: true
+      EC2_KEY:
+        required: true
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -14,7 +22,7 @@ jobs:
       - name: Set up SSH Key
         shell: bash
         run: |
-          echo "${{ secrets.EC2_KEY_PYTHON }}" > ~/RustSimpleServer.pem
+          echo "${{ secrets.EC2_KEY }}" > ~/RustSimpleServer.pem
           chmod 400 ~/RustSimpleServer.pem
 
       - name: Deploy Code
