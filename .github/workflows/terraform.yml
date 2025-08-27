@@ -17,9 +17,6 @@ permissions:
   pull-requests: write
 env:
   TF_LOG: INFO
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  AWS_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME_TF_STATE }}
-  AWS_BUCKET_KEY_NAME: ${{ secrets.S3_BUCKET_KEY_NAME_TF_STATE }}
 jobs:
   deploy:
     name: "Run Terraform"
