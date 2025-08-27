@@ -48,9 +48,6 @@ jobs:
 
       - name: Terraform Init
         id: init
-        env:
-          AWS_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME_TF_STATE }}
-          AWS_BUCKET_KEY_NAME: ${{ secrets.S3_BUCKET_KEY_NAME_TF_STATE }}
         run: terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
 
       - name: Terraform Validate
