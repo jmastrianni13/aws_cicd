@@ -46,6 +46,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.12.2
+          terraform_wrapper: false # to prevent known formatting issues
 
       - name: Terraform Format
         run: terraform fmt -check
@@ -71,5 +72,7 @@ jobs:
 
       - name: Get Terraform Outputs
         id: tf_outputs
-        run: echo "EC2_HOST=some_host" >> $GITHUB_OUTPUT
+        run: |
+          echo "EC2_HOST=(terraform output -raw ec2_simple_server_ip)"
+          echo "EC2_HOST=(terraform output -raw ec2_simple_server_ip)" >> $GITHUB_OUTPUT
 
