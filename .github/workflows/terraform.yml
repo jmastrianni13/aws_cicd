@@ -73,6 +73,6 @@ jobs:
       - name: Get Terraform Outputs
         id: tf_outputs
         run: |
-          echo "EC2_HOST=(terraform output -raw ec2_simple_server_ip)"
-          echo "EC2_HOST=(terraform output -raw ec2_simple_server_ip)" >> $GITHUB_OUTPUT
+          echo "EC2_HOST=$(terraform output -raw ec2_simple_server_ip)"
+          echo "EC2_HOST=$(terraform output -raw ec2_simple_server_ip)" >> $GITHUB_OUTPUT
 
