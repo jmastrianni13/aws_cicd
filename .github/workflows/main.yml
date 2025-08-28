@@ -18,12 +18,17 @@ jobs:
       AWS_ROLE_GITHUB_ACTIONS: ${{ secrets.AWS_ROLE_GITHUB_ACTIONS }}
       AWS_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME_TF_STATE }}
       AWS_BUCKET_KEY_NAME: ${{ secrets.S3_BUCKET_KEY_NAME_TF_STATE }}
-  call-cd:
+  test_output:
+    runs-on: ubuntu-latest
     needs: call-terraform
-    uses: ./.github/workflows/cd.yml
-    with:
-      EC2_HOST: ${{ needs.call-terraform.outputs.ec2_public_ip }}
-    secrets:
-      EC2_USER: ${{ secrets.EC2_USER }}
-      EC2_KEY: ${{ secrets.EC2_KEY }}
+    steps:
+      - run: echo ECO_HOST is ${{ needs.call-terraform.outputs.ec2_public_ip }}
+  #call-cd:
+  #  needs: call-terraform
+  #  uses: ./.github/workflows/cd.yml
+  #  with:
+  #    EC2_HOST: ${{ needs.call-terraform.outputs.ec2_public_ip }}
+  #  secrets:
+  #    EC2_USER: ${{ secrets.EC2_USER }}
+  #    EC2_KEY: ${{ secrets.EC2_KEY }}
 
