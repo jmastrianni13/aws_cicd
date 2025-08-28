@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: call-terraform
     steps:
-      - run: echo ECO_HOST is ${{ needs.call-terraform.outputs.ec2_public_ip }}
+      - run: echo EC2_HOST is ${{ needs.call-terraform.outputs.ec2_public_ip }}
   #call-cd:
   #  needs: call-terraform
   #  uses: ./.github/workflows/cd.yml

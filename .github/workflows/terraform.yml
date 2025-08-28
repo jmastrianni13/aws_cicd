@@ -30,7 +30,7 @@ jobs:
         shell: bash
         working-directory: terraform/
     outputs:
-      ec2_public_ip_output: #{{ steps.tf_outputs.outputs.EC2_HOST }}
+      ec2_public_ip_output: ${{ steps.tf_outputs.outputs.EC2_HOST }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -71,7 +71,5 @@ jobs:
 
       - name: Get Terraform Outputs
         id: tf_outputs
-        run: |
-          echo "EC2_HOST=some_host"
-          echo "EC2_HOST=some_host" >> $GITHUB_OUTPUT
+        run: echo "EC2_HOST=some_host" >> $GITHUB_OUTPUT
 
