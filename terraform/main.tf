@@ -8,7 +8,7 @@ data "aws_vpc" "default" {
 
 resource "aws_subnet" "simple_subnet" {
   vpc_id            = data.aws_vpc.default.id
-  availability_zone = provider.aws.region
+  availability_zone = "use1-az1"
 }
 
 resource "aws_security_group" "simple_sg" {
