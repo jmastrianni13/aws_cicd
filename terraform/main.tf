@@ -13,6 +13,7 @@ data "aws_availability_zones" "available" {
 resource "aws_subnet" "simple_subnet" {
   vpc_id            = data.aws_vpc.default.id
   availability_zone = data.aws_availability_zones.available.names[0]
+  cidr_block        = cidrsubnet(data.aws_vpc.default.cidr_block, 4, 1)
 }
 
 resource "aws_security_group" "simple_sg" {
