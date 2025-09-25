@@ -7,7 +7,7 @@ data "aws_vpc" "default" {
 }
 
 resource "aws_subnet" "simple_subnet" {
-  vpc_id            = aws_vpc.default.id
+  vpc_id            = data.aws_vpc.default.id
   availability_zone = provider.aws.region
 }
 
@@ -51,10 +51,6 @@ resource "aws_instance" "simple_server" {
   tags = {
     Name = "EC2 Instance Simple Server"
   }
-}
-
-data "aws_instance" "simple_server" {
-  instance_id = "i-04002736142d2b9e6"
 }
 
 resource "aws_instance" "simple_client" {
