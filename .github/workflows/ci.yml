@@ -14,7 +14,7 @@ jobs:
     - name: Set up rust
       uses: actions-rs/toolchain@v1
       with:
-        profile: minimal
+        profile: default # changed from minimal to include clippy
         toolchain: stable
         override: true
 
