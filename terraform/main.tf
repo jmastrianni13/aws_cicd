@@ -48,6 +48,8 @@ resource "aws_instance" "simple_server" {
 
   vpc_security_group_ids = [aws_security_group.simple_sg.id]
 
+  associate_public_ip_address = true
+
   user_data = <<-EOF
   #!/bin/bash
   sudo yum update -y
@@ -68,6 +70,8 @@ resource "aws_instance" "simple_client" {
   subnet_id = aws_subnet.simple_subnet.id
 
   vpc_security_group_ids = [aws_security_group.simple_sg.id]
+
+  associate_public_ip_address = true
 
   user_data = <<-EOF
   #!/bin/bash
