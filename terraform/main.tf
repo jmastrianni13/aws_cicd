@@ -2,8 +2,8 @@ provider "aws" {
   region = "us-east-1"
 }
 
-data "aws_vpc" "default" {
-  default = true
+resource "aws_vpc" "simple_vpc" {
+  cidr_block = "10.0.0.0/16"
 }
 
 data "aws_availability_zones" "available" {
@@ -11,9 +11,9 @@ data "aws_availability_zones" "available" {
 }
 
 resource "aws_subnet" "simple_subnet" {
-  vpc_id            = data.aws_vpc.default.id
+  vpc_id            = aws_vpc.simple_vpc.id
   availability_zone = data.aws_availability_zones.available.names[0]
-  cidr_block        = cidrsubnet(data.aws_vpc.default.cidr_block, 8, 0)
+  cidr_block        = cidrsubnet(aws_vpc.simple_vpc.cidr_block, 8, 1)
 }
 
 resource "aws_security_group" "simple_sg" {
