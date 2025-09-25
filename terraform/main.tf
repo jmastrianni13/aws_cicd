@@ -10,6 +10,10 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+data "aws_security_group" "default" {
+  vpc_id = aws_vpc.simple_vpc.id
+}
+
 resource "aws_subnet" "simple_subnet" {
   vpc_id                  = aws_vpc.simple_vpc.id
   availability_zone       = data.aws_availability_zones.available.names[0]
@@ -46,7 +50,7 @@ resource "aws_instance" "simple_server" {
 
   subnet_id = aws_subnet.simple_subnet.id
 
-  vpc_security_group_ids = [aws_security_group.simple_sg.id]
+  vpc_security_group_ids = [data.aws_security_group.default.id, aws_security_group.simple_sg.id]
 
   user_data = <<-EOF
   #!/bin/bash
@@ -67,7 +71,7 @@ resource "aws_instance" "simple_client" {
 
   subnet_id = aws_subnet.simple_subnet.id
 
-  vpc_security_group_ids = [aws_security_group.simple_sg.id]
+  vpc_security_group_ids = [data.aws_security_group.default.id, aws_security_group.simple_sg.id]
 
   user_data = <<-EOF
   #!/bin/bash
