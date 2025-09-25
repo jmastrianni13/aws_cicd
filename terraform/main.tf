@@ -19,7 +19,7 @@ resource "aws_subnet" "simple_subnet" {
 resource "aws_security_group" "simple_sg" {
   name        = "simle-server-client-sg"
   description = "experimental sg for server/client running in same vcp"
-  vpc_id      = data.aws_vpc.default.id
+  vpc_id      = aws_vpc.simple_vpc.id
 
   ingress {
     from_port   = 0
