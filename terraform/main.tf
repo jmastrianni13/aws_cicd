@@ -11,13 +11,14 @@ data "aws_availability_zones" "available" {
 }
 
 resource "aws_subnet" "simple_subnet" {
-  vpc_id            = aws_vpc.simple_vpc.id
-  availability_zone = data.aws_availability_zones.available.names[0]
-  cidr_block        = cidrsubnet(aws_vpc.simple_vpc.cidr_block, 8, 1)
+  vpc_id                  = aws_vpc.simple_vpc.id
+  availability_zone       = data.aws_availability_zones.available.names[0]
+  cidr_block              = cidrsubnet(aws_vpc.simple_vpc.cidr_block, 8, 1)
+  map_public_ip_on_launch = true
 }
 
 resource "aws_security_group" "simple_sg" {
-  name        = "simle-server-client-sg"
+  name        = "simple-server-client-sg"
   description = "experimental sg for server/client running in same vcp"
   vpc_id      = aws_vpc.simple_vpc.id
 
