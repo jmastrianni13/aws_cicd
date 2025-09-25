@@ -6,9 +6,13 @@ data "aws_vpc" "default" {
   default = true
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 resource "aws_subnet" "simple_subnet" {
   vpc_id            = data.aws_vpc.default.id
-  availability_zone = "use1-az1"
+  availability_zone = data.aws_availability_zones.available.names[0]
 }
 
 resource "aws_security_group" "simple_sg" {
