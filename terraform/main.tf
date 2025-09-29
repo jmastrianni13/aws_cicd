@@ -40,7 +40,6 @@ resource "aws_security_group" "simple_sg" {
   vpc_id      = aws_vpc.simple_vpc.id
 
   ingress {
-    self        = true
     from_port   = 0
     to_port     = 65535
     protocol    = "tcp"
