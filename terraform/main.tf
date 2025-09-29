@@ -41,8 +41,8 @@ resource "aws_security_group" "simple_sg" {
 
   ingress {
     from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    to_port     = 65535
+    protocol    = "tcp"
     cidr_blocks = [aws_vpc.simple_vpc.cidr_block]
   }
 
