@@ -38,6 +38,7 @@ resource "aws_security_group" "simple_sg" {
   name        = "simple-server-client-sg"
   description = "experimental sg for server/client running in same vcp"
   vpc_id      = aws_vpc.simple_vpc.id
+  self        = true
 
   ingress {
     from_port   = 0
