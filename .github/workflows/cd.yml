@@ -73,11 +73,6 @@ jobs:
         run: |
           scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r ${{ runner.temp }}/set-env-var.sh ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service/
 
-      - name: Push updated binary to target
-        shell: bash
-        run: |
-          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r target/aarch64-unknown-linux-musl/release/web_server ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service/
-
       - name: Render .service file
         uses: nowactions/envsubst@v1
         with:
@@ -85,6 +80,16 @@ jobs:
           output: ${{ runner.temp }}/web-server.service
         env:
           FOO: ${{ secrets.TEST_VAR }}
+
+      - name: Stop the service
+        shell: bash
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} "sudo systemctl stop web-server.service || true"
+
+      - name: Push updated binary to target
+        shell: bash
+        run: |
+          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r target/aarch64-unknown-linux-musl/release/web_server ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service/
 
       - name: Replace .service file
         shell: bash
@@ -96,7 +101,6 @@ jobs:
         shell: bash
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} "
-          sudo systemctl stop web-server.service || true &&
           sudo systemctl daemon-reload &&
           sudo systemctl enable web-server.service &&
           sudo systemctl start web-server.service
