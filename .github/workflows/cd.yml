@@ -61,15 +61,16 @@ jobs:
             ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} 'mkdir -p /home/${{ secrets.EC2_USER }}/service'
 
       - name: Write env var shell script directly on target
-        uses: bash
+        shell: bash
         env:
           FOO: ${{ secrets.TEST_VAR }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} "
-          cat > /home/${{ secrets.EC2_USER }}/service/set-env-var.sh <<'EOF'
-          export BAR=${FOO}
+          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} '
+          cat > /home/${{ secrets.EC2_USER }}/service/set-env-var.sh <<'"'"'EOF'"'"'
+          export BAR=${{ env.FOO }}
           EOF
-          "
+          '
+
       - name: Render .service file
         uses: nowactions/envsubst@v1
         with:
