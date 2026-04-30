@@ -24,22 +24,28 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Install rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1.15.2
+
+      - name: Add targets
+        shell: bash
+        run: |
+          rustup target add aarch64-unknown-linux-musl
+
+      - name: Build aarch64 binary
+        shell: bash
+        run: |
+          cargo zigbuild --release --target aarch64-unknown-linux-musl
+
       - name: Set up SSH Key
         shell: bash
         run: |
           echo "${{ secrets.EC2_KEY }}" > ~/RustSimpleServer.pem
           chmod 400 ~/RustSimpleServer.pem
 
-      - name: Deploy Code
+      - name: Push updated binary to target
         shell: bash
         run: |
-          # Copy relevant files to the EC2 instance
-          echo "EC2_HOST = ${{ inputs.EC2_HOST }}"
-          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r ./* ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/RustSimpleServer
+          scp -o StrictHostKeyChecking=no -i ~/secret_key.pem -r target/aarch64-unknown-linux-musl/release/search ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service
 
-          # SSH into the EC2 instance and deploy
-          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} "
-            cd /home/${{ secrets.EC2_USER }}/RustSimpleServer &&
-            docker-compose up --build -d
-          "
 
