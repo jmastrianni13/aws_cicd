@@ -89,6 +89,7 @@ jobs:
           "$(echo "${{ secrets.SERVICE_FILE }}" | base64 -d)"
           EOF
           "
+          '
 
       - name: Start the service
         shell: bash
