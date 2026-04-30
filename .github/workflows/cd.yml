@@ -53,6 +53,10 @@ jobs:
           echo "${{ secrets.EC2_KEY }}" > ~/RustSimpleServer.pem
           chmod 400 ~/RustSimpleServer.pem
 
+      - name: Set up directory
+        shell: bash
+        run: mkdir -p /home/${{ secrets.EC2_USER }}/service
+
       - name: Push updated binary to target
         shell: bash
         run: |
