@@ -62,15 +62,15 @@ jobs:
       - name: Render set-env-var shell script
         uses: nowactions/envsubst@v1
         with:
-          input: $GITHUB_WORKSPACE/.gitignore/templates/app-env.template
-          output: $RUNNER_TEMP/set-env-var.sh
+          input: ${{ github.workspace }}/.gitignore/templates/app-env.template
+          output: ${{ runner.temp }}/set-env-var.sh
         env:
-          FOO: secrets.TEST_VAR
+          FOO: ${{ secrets.TEST_VAR }}
 
       - name: Push env var script target
         shell: bash
         run: |
-          scp -o StrictHostKeyChecking=no -i ~/secret_key.pem -r $RUNNER_TEMP/set-env-var.sh ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service
+          scp -o StrictHostKeyChecking=no -i ~/secret_key.pem -r ${{ runner.temp }}/set-env-var.sh ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service
 
       - name: Push updated binary to target
         shell: bash
