@@ -70,11 +70,11 @@ jobs:
       - name: Push env var script target
         shell: bash
         run: |
-          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r ${{ runner.temp }}/set-env-var.sh ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service
+          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r ${{ runner.temp }}/set-env-var.sh ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service/
 
       - name: Push updated binary to target
         shell: bash
         run: |
-          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r target/aarch64-unknown-linux-musl/release/web_server ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service/web_server
+          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r target/aarch64-unknown-linux-musl/release/web_server ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service/
 
 
