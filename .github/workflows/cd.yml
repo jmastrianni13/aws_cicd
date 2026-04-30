@@ -58,7 +58,7 @@ jobs:
       - name: Set up directory
         shell: bash
         run: |
-            ssh -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} 'mkdir -p home/${{ secrets.EC2_USER }}/service'
+            ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} 'mkdir -p home/${{ secrets.EC2_USER }}/service'
 
       - name: Render set-env-var shell script
         uses: nowactions/envsubst@v1
