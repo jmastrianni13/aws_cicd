@@ -62,12 +62,10 @@ jobs:
 
       - name: Write env var shell script directly on target
         shell: bash
-        env:
-          FOO: ${{ secrets.TEST_VAR }}
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} '
           cat > /home/${{ secrets.EC2_USER }}/service/set-env-var.sh <<'"'"'EOF'"'"'
-          export BAR=${{ env.FOO }}
+          export BAR=${{ secrets.TEST_VAR }}
           EOF
           '
 
