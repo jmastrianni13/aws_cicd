@@ -89,7 +89,8 @@ jobs:
       - name: Replace .service file
         shell: bash
         run: |
-          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r ${{ runner.temp }}/web-server.service ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/etc/systemd/system/web-server.service
+          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r ${{ runner.temp }}/web-server.service ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service/
+          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} "sudo mv /home/${{ secrets.EC2_USER }}/service/web-server.service /etc/systemd/system/web-server.service"
 
       - name: Start the service
         shell: bash
