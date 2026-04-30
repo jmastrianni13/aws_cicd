@@ -56,8 +56,13 @@ jobs:
           chmod 400 ~/RustSimpleServer.pem
 
       - name: Set up directory
-        shell: bash
-        run: sudo mkdir -p /home/${{ secrets.EC2_USER }}/service
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ inputs.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            mkdir -p /home/${{ secrets.EC2_USER }}/service
 
       - name: Render set-env-var shell script
         uses: nowactions/envsubst@v1
