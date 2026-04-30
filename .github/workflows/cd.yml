@@ -62,7 +62,7 @@ jobs:
       - name: Render set-env-var shell script
         uses: nowactions/envsubst@v1
         with:
-          input: ${{ github.workspace }}/.gitignore/templates/app-env.template
+          input: ${{ github.workspace }}/.github/templates/app-env.template
           output: ${{ runner.temp }}/set-env-var.sh
         env:
           FOO: ${{ secrets.TEST_VAR }}
