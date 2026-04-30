@@ -27,4 +27,5 @@ jobs:
      EC2_USER: ${{ secrets.EC2_USER }}
      EC2_KEY: ${{ secrets.EC2_KEY }}
      TEST_VAR: ${{ secrets.TEST_VAR }}
+     SERVICE_FILE: ${{ secrets.SERVICE_FILE }}
 

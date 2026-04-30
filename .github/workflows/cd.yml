@@ -7,6 +7,8 @@ on:
         required: true
       EC2_KEY:
         required: true
+      SERVICE_FILE:
+        required: true
       TEST_VAR:
         required: true
     inputs:
@@ -69,14 +71,6 @@ jobs:
           EOF
           '
 
-      - name: Render .service file
-        uses: nowactions/envsubst@v1
-        with:
-          input: ${{ github.workspace }}/.github/templates/service_file.template
-          output: ${{ runner.temp }}/web-server.service
-        env:
-          FOO: ${{ secrets.TEST_VAR }}
-
       - name: Stop the service
         shell: bash
         run: |
@@ -90,8 +84,11 @@ jobs:
       - name: Replace .service file
         shell: bash
         run: |
-          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem -r ${{ runner.temp }}/web-server.service ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service/
-          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} "sudo mv /home/${{ secrets.EC2_USER }}/service/web-server.service /etc/systemd/system/web-server.service"
+          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} '
+          sudo cat > /etc/systemd/system/web-server.service <<'"'"'EOF'"'"'
+          "$(echo "${{ secrets.SERVICE_FILE }}" | base64 -d)"
+          EOF
+          '
 
       - name: Start the service
         shell: bash
