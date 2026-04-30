@@ -1,0 +1,14 @@
+# Web Server
+[Unit]
+Description=Web Server
+
+[Service]
+Type=simple
+User=ec2-user
+WorkingDirectory=/home/ec2-user/service
+ExecStart=/bin/bash -c 'source /home/ec2-user/service/set-env-var.sh && /home/ec2-user/service/web_server'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
