@@ -85,10 +85,10 @@ jobs:
         shell: bash
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} '
-          sudo cat > /etc/systemd/system/web-server.service <<'"'"'EOF'"'"'
+          sudo bash -c "cat > /etc/systemd/system/web-server.service <<'"'"'EOF'"'"'
           "$(echo "${{ secrets.SERVICE_FILE }}" | base64 -d)"
           EOF
-          '
+          "
 
       - name: Start the service
         shell: bash
