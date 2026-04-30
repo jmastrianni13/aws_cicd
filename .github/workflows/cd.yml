@@ -84,12 +84,9 @@ jobs:
       - name: Replace .service file
         shell: bash
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} '
-          sudo bash -c "cat > /etc/systemd/system/web-server.service <<'"'"'EOF'"'"'
-          "$(echo "${{ secrets.SERVICE_FILE }}" | base64 -d)"
-          EOF
-          "
-          '
+          echo "${{ secrets.SERVICE_FILE }}" | base64 -d > service-decoded
+          scp -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem service-decoded ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/service/web-server.service
+          ssh -o StrictHostKeyChecking=no -i ~/RustSimpleServer.pem ${{ secrets.EC2_USER }}@${{ inputs.EC2_HOST }} 'sudo mv /home/${{ secrets.EC2_USER }}/service/web-server.service /etc/systemd/system/web-server.service'
 
       - name: Start the service
         shell: bash
